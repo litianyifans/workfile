@@ -1,0 +1,45 @@
+1:nexus搭建
+nexus安装  https://www.cnblogs.com/aegisada/p/6323067.html
+nexus 本地索引更新 https://blog.csdn.net/qq_19916577/article/details/49679363
+setting元素说明https://blog.csdn.net/hemin1003/article/details/7181282
+
+settings.xml文件一般存在于两个位置：
+全局配置: ${M2_HOME}/conf/settings.xml
+用户配置: user.home/.m2/settings.xmlnote：用户配置优先于全局配置。user.home/.m2/settings.xmlnote：用户配置优先于全局配置。{user.home} 和和所有其他系统属性只能在3.0+版本上使用。请注意windows和Linux使用变量的区别。
+
+配置优先级 pom.xml> user settings > global settings
+
+maven 内置属性
+${basedir}表示项目根目录,即包含pom.xml文件的目录;
+
+${version}表示项目版本;
+
+${project.basedir}同${basedir};
+
+${project.baseUri}表示项目文件地址;
+
+${maven.build.timestamp}表示项目构件开始时间;
+
+${maven.build.timestamp.format}表示属性${maven.build.timestamp}的展示格式,默认值为yyyyMMdd-HHmm,可自定义其格式,其类型可参考java.text.SimpleDateFormat。
+
+
+IDEA Springboot Tomcat热部署 https://blog.csdn.net/ngl272/article/details/70215809
+
+maven发布快照 https://blog.csdn.net/wangb_java/article/details/66000956
+
+pom元素说明https://blog.csdn.net/hemin1003/article/details/7181428
+
+
+
+
+
+
+
+
+
+
+spring-security-oauth2 使用:https://www.yiibai.com/spring-security/secure-spring-rest-api-using-oauth2.html
+
+
+
+springboot 参考资料
