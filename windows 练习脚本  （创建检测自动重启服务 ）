@@ -1,0 +1,117 @@
+@echo off
+
+
+
+rem ================================================================================================
+rem ======                                    AUTO CHECK                                         ===
+rem ================================================================================================
+rem ================================================================================================
+rem ================================================================================================
+rem ======           请先配置环境变量 HISDATA、IOSERVER、TTMANAGER                               ===
+rem ======           名称 ：HISDATA   值：文件的完整路径                                         ===
+rem ======           例如 ：名称：HISDATA  值：F:\Server\HisData\HisData.exe                     ===
+rem ======                                                                                       ===
+rem ======                                                                                       ===
+rem ======                                                                                       ===
+rem ======                                                                                       ===
+rem ================================================================================================
+rem ================================================================================================
+rem ================================================================================================
+rem ================================================================================================
+
+
+
+
+
+
+
+
+
+
+rem chcp 437调整936中文GBK编码为437美国编码 否则schtasks.exe /query /tn 会报错
+for /l %%i in (1,1,100000) do echo %%i>nul
+:checkTask
+chcp 437
+schtasks.exe /query /tn "myApp"
+IF %ERRORLEVEL% == 0  goto excuteServiceConfig
+echo =======schtasks not found,create schtasks============
+schtasks /delete /tn "myApp" /f
+schtasks /create /tn "myApp" /tr %cd%autoCheck.bat /sc onlogon
+for /l %%i in (1,1,100000) do echo %%i>nul
+echo ======create schtasks  success=========================
+goto checkTask
+ 
+
+
+:excuteServiceConfig 
+chcp 936
+echo ======设置服务industrial system real-time history database为自动模式=============
+sc config "industrial system real-time history database"  start= auto
+echo ======设置成功=============
+:checkService
+cls
+echo ======检查industrial system real-time history database服务是否启动=============
+net start |findstr  "industrial system real-time history database"
+IF  %ERRORLEVEL% == 0 goto checkTaskList
+echo ====industrial system real-time history database服务启动失败，正在重新启动服务===
+net start "industrial system real-time history database"
+for /l %%i in (1,1,100000) do echo %%i>nul
+goto checkService
+
+:checkTaskList
+
+tasklist|findstr  "HisData.exe"
+IF %ERRORLEVEL% == 0 goto checkIoServer
+taskkill /F /IM IOServer.exe  
+taskkill /F /IM TTManager.exe  
+goto startHisdata
+
+:checkIoServer
+tasklist|findstr  "IOServer.exe"
+IF %ERRORLEVEL% == 0 goto checkService
+taskkill /F /IM TTManager.exe
+goto startIoServer
+
+
+
+:startHisdata
+if not "%HISDATA%" == "" goto okHisdata
+echo "请先设置HISDATA、IOSERVER、TTMANAGER 三个环境变量，再运行此脚本:"
+goto end
+:okHisdata
+set HisDataPath=%HISDATA%
+set HisDataDir=%HisDataPath:\HisData.exe=%
+cd /d %HisDataDir%
+echo 开始启动数据库..
+start HisData.exe
+for /l %%i in (1,1,2000000) do echo %%i>nul
+echo 启动数据库完成
+
+:startIoServer
+if not "%IOSERVER%" == "" goto okIoServer
+echo "没有设置IOSERVER环境变量："
+goto end 
+:okIoServer
+set IoServerPath=%IOSERVER%
+set IoServerDir=%IoServerPath:\IOServer.exe=%
+cd /d %IoServerDir%
+echo 开始启动IoServer...
+start IOServer.exe
+for /l %%i in (1,1,1000000) do echo %%i>nul
+echo 启动IoServer完成
+
+if not "%TTMANAGER%" == "" goto okTTmanager
+echo "没有设置TTMANAGER环境变量："
+goto end 
+:okTTmanager
+set TTManagerPath=%TTMANAGER%
+set TTManagerDir=%TTManagerPath:\TTManager.exe=%
+cd /d %TTManagerDir%
+echo 开始启动客户端...
+start TTManager.exe
+for /l %%i in (1,1,100000) do echo %%i>nul
+echo 启动客户端完成
+echo =========== 所有程序启动完成=============
+goto  checkTaskList
+:end
+
