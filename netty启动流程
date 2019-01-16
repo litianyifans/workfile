@@ -1,4 +1,4 @@
-	<span style="white-space:pre">  </span>1、首先是new 一个ServerBootstrap，看ServerBootstrap的源码，其构造函数中没有什么初始化工作，并且，它是继承AbstractBootstrap类，其中大多数的工作都是其完成的。  
+ 1、首先是new 一个ServerBootstrap，看ServerBootstrap的源码，其构造函数中没有什么初始化工作，并且，它是继承AbstractBootstrap类，其中大多数的工作都是其完成的。  
     2、绑定了两个group，这两个group，一个是用来接收到连接请求时，处理，另一个是接收到数据时，处理的工作线程。  
         1. 这里是使用的NioEventLoopGroup，它继承MultithreadEventLoopGroup，  
            在这个NioEventLoopGroup初始化时，会初始化线程池、Selector、ExecutorChooser（PowerOfTwoEventExecutorChooser）、队列拒绝handler、和EventLoop。这里初始化的是NioEventLoop。  
