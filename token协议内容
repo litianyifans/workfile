@@ -1,0 +1,3 @@
+String sign = HTTPMETHOD（GET/POST）+ api_uri（API的访问URI）+date（即上面的UNIX时间戳）+length（发送body的数据长度）+password（后台颁发的密码）
+sign = MD5(sign)
+sign = user+":"+sign
