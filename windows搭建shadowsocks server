@@ -1,0 +1,52 @@
+一、下载 libQtShadowsocks
+
+      Windows服务端软件下载地址
+
+    https://github.com/shadowsocks/libQtShadowsocks/releases
+
+根据自己电脑系统版本下载对应的版本，下载后进行解压
+
+得到文件  shadowsocks-libqss.exe
+
+二、配置相关文件
+
+在程序目录下创建名为 config.json 配置文件
+[python] view plain copy
+{  
+    "server":"0.0.0.0",  
+    "server_port":8023,  
+    "local_address":"127.0.0.1",  
+    "local_port":1080,  
+    "password":"wyvbboy",  
+    "timeout":600,  
+    "method":"aes-256-cfb",  
+    "http_proxy": false,  
+    "auth": false  
+}  
+
+三、创建启动脚本
+
+在同目录下创建 shadowsocks.bat 启动脚本
+
+内容如下
+
+[python] view plain copy
+@echo off  
+shadowsocks-libqss.exe -c config.json -S  
+
+
+然后运行 shadowsocks.bat 即可，关闭时就关闭批处理就行了，很简单
+
+
+
+四、隐藏bat窗口
+
+运行后上面那个黑色的窗口一直存在，太影响正常使用了 下面通过vbs脚本的方法将批处理脚本隐藏
+
+新建一个shadowsocks.vbs 文件 写入下面代码
+
+[python] view plain copy
+Set ws = CreateObject("Wscript.Shell")  
+ws.run "cmd /c shadowsocks.bat",vbhide  
+
+运行shadowsocks.vbs 即可
